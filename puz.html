@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        #app {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .puz-box {
+            position: relative;
+            height: 600px;
+            width: 600px;
+            border: 1px solid #000;
+            /* background-image: url('./bg-img.jpg'); */
+        }
+        .move-block {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            box-sizing: border-box;
+            border: 1px solid #000;
+            /* box-shadow: rgba(34, 41, 59, 0.1) 5px 5px 5px 5px; */
+            transition: 0.6s;
+            cursor: pointer;
+            background-image: url('http://i0.hdslb.com/bfs/article/f167263c86d385f4f7d35b3ffb827fff59fdbc39.jpg');
+        }
+        .move-block:hover {
+            box-shadow: 0 0 50px 0 rgba(42,80,130,0.5);
+        }
+    </style>
+    <link rel="icon" href="data:;base64,=">
+    <title>puzz</title>
+  </head>
+  <body>
+    <div id="app">
+        <div class="puz-box">
+            <div class="move-block" v-for="(item, index) in itemList"  
+            v-bind:style="{top: itemList[index][0]*200 + 'px', left: itemList[index][1]*200 + 'px', 'background-position-y':600 -  parseInt(index/3)*200 + 'px', 'background-position-x':600 - (index%3)*200 + 'px' }"
+            @click="move(index)"
+            >
+            <p>{{item[0]}}</p>
+            <p>{{item[1]}}</p>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            itemList: [],
+            empty: [2, 2],
+            message: 123
+        },
+        methods: {
+            initBox: function() {
+                let newArr = []
+                let arr = [0,1,2,3,4,5,6,7]
+                arr.forEach(item => {
+                    let a = parseInt(item/3), b = item%3
+                    newArr.push([a,b])
+                })
+                this.itemList = newArr
+            },
+            move: function(index) {
+                let newList = JSON.parse(JSON.stringify(this.itemList))
+                let active = newList[index]
+                if((active[0] === this.empty[0] || active[1] === this.empty[1]) && Math.abs(active[0] + active[1] - this.empty[0] - this.empty[1]) === 1) {
+                    newList[index] = this.empty
+                    this.empty = active
+                    this.itemList = newList
+                }
+            }
+        },
+        created() {
+            this.initBox()
+        }
+    })
+</script>
